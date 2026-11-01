@@ -1,16 +1,410 @@
-.bg-primary {
-	padding: 15px;
+/* Skin picker styles. Bootstrap supplies the grid and form controls; these tokens set the look.
+   Light by default, dark when data-bs-theme="dark" (set from WEB_STYLE_DARK) or the system asks for it. */
+:root {
+  --canvas: #f5f6f8;
+  --surface: #ffffff;
+  --sunken: #eef0f3;
+  --ink: #1c2127;
+  --muted: #5a6371;
+  --line: #dde1e7;
+  --accent: #c2410c;
+  --accent-hover: #a83a0a;
+  --accent-ink: #ffffff;
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
-.card-title item-name {
-	//text-align:center;
-	font-weight: bold;
+[data-bs-theme="dark"] {
+  --canvas: #101317;
+  --surface: #171b21;
+  --sunken: #1d222a;
+  --ink: #e7eaf0;
+  --muted: #9aa3b2;
+  --line: #2a303a;
+  --accent: #f97316;
+  --accent-hover: #fb923c;
+  --accent-ink: #111418;
 }
 
+body {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+[hidden] { display: none !important; }
+
+/* Top bar and the login intro. */
+.site-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  margin: 0 -1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.site-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.site-intro {
+  padding: 1.5rem 1.5rem 0;
+  color: var(--muted);
+}
+.site-intro p { margin: 0; }
+.site-intro a img { vertical-align: middle; }
+
+.bg-primary,
+.container > .bg-primary {
+  background: transparent !important;
+}
+
+.container.mt-2 { margin-top: 1.5rem !important; }
+
+/* Weapon tiles: bordered panels with square-ish corners, no shadows. */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: none;
+  color: var(--ink);
+}
+.card-group { gap: 0.75rem; }
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  padding: 0.7rem 0.9rem;
+}
+.card-footer {
+  background: transparent;
+  border-top: 1px solid var(--line);
+  padding: 0.7rem 0.9rem;
+}
+.card-body { padding: 0.9rem; }
+
+.card-title,
+.item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+h5.card-title { font-size: 0.95rem; }
+h6.card-title {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+}
+
+/* The skin preview sits on a quiet tile so transparent PNGs read well in both themes. */
 .skin-image {
-	margin: 0 auto;
-	display: block;
-	text-align: center;
-	width: 50%;
-	//border-bottom: solid 1px #eee;
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 180px;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: var(--sunken);
+  border-radius: 4px;
+  padding: 0.5rem;
 }
+
+.card-footer .form-control,
+.card-footer select {
+  background-color: var(--canvas);
+  color: var(--ink);
+  border-color: var(--line);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* Buttons. The orange accent is for the one action per tile; everything else is quiet. */
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--accent-ink);
+}
+.btn-danger {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-danger:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); }
+.btn-outline-primary {
+  color: var(--accent);
+  border-color: var(--line);
+  background: transparent;
+}
+.btn-outline-primary:hover {
+  color: var(--accent-ink);
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+.btn-secondary,
+.btn-outline-secondary {
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--line);
+}
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+  background: var(--sunken);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+/* Settings modal and the sticker dialog share the same surface. */
+.modal-content {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.modal-header,
+.modal-footer {
+  border-color: var(--line);
+}
+.modal-header h5 { font-weight: 600; }
+.form-select,
+.form-control {
+  background-color: var(--canvas);
+  color: var(--ink);
+  border-color: var(--line);
+  border-radius: 6px;
+}
+.form-group label { color: var(--muted); font-size: 0.85rem; }
+
+/* Sticker editor overlay. */
+.sticker-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 16px;
+}
+
+.sticker-dialog {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-width: 880px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  padding: 1.1rem;
+}
+
+.sticker-head,
+.sticker-foot {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.sticker-head h5 { font-weight: 600; margin: 0; }
+.sticker-foot { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+
+.sticker-slots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.sticker-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 0.78rem;
+  text-align: center;
+}
+.sticker-tile.active {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.sticker-tile img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+
+.sticker-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.5rem;
+  max-height: 260px;
+  overflow: auto;
+  margin: 0.5rem 0;
+}
+
+.sticker-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 0.7rem;
+  text-align: center;
+}
+.sticker-result:hover { border-color: var(--accent); }
+.sticker-result img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.sticker-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.sticker-controls label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.muted { color: var(--muted); }
+
+@media (max-width: 600px) {
+  .site-bar { padding: 0.75rem 1rem; }
+  .sticker-slots { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Page header and search. */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 0 0.25rem;
+}
+.page-head h1 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.2rem;
+}
+.page-head p { margin: 0; font-size: 0.9rem; }
+.skin-search {
+  width: min(320px, 100%);
+  background-color: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.skin-search::placeholder { color: var(--muted); }
+
+/* Tiles: one line for the name, compact footer buttons, even spacing. */
+#skin-grid > .col-sm-2 { padding-bottom: 0.75rem; }
+#skin-grid .card-header h5,
+#skin-grid .card-header h6 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#skin-grid .card-header { min-height: 3.2rem; display: flex; flex-direction: column; justify-content: center; }
+#skin-grid .card-footer { display: flex; flex-direction: column; gap: 0.5rem; }
+#skin-grid .card-footer .btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+}
+#skin-grid .card-footer form { display: flex; flex-direction: column; gap: 0.5rem; }
+#skin-grid .card-footer .btn + .btn { margin-left: 0; }
+#skin-grid .card-footer > form > .btn-primary,
+#skin-grid .card-footer > form > .btn-outline-primary {
+  width: 100%;
+}
+#skin-grid .card-footer > form > .d-flex,
+#skin-grid .card-footer > form > .gap-2 { gap: 0.4rem; }
+#skin-grid .card-footer > form > br { display: none; }
+
+#skin-count { color: var(--muted); }
+
+/* Tile buttons share one quiet style. The select is the main control, so the buttons stay secondary. */
+#skin-grid .card-footer .btn-primary,
+#skin-grid .card-footer .btn-outline-primary {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+#skin-grid .card-footer .btn-primary:hover,
+#skin-grid .card-footer .btn-outline-primary:hover {
+  background: var(--sunken);
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+/* Long weapon names wrap to two lines instead of being cut off. */
+#skin-grid .card-header h5 {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.25;
+  font-size: 0.9rem;
+}
+#skin-grid .card-header { min-height: 3.8rem; }
+
+/* Phones: two tiles per row instead of one long column. */
+#skin-grid { flex-wrap: wrap; }
+@media (max-width: 575.98px) {
+  #skin-grid > .col-sm-2 { flex: 0 0 50%; max-width: 50%; padding-left: 0.35rem; padding-right: 0.35rem; }
+  #skin-grid .card-footer .btn { font-size: 0.75rem; }
+}
+
+/* The top bar spans the full width with no negative margin, so phones do not scroll sideways. */
+.site-bar { margin: 0; }
+
+.sticker-status { margin: 0.5rem 0 0; font-size: 0.8rem; }
+
+.side-tabs { display: flex; gap: 0.25rem; margin-left: auto; margin-right: 0.75rem; }
+.side-tab {
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.side-tab:hover { border-color: var(--accent); color: var(--ink); }
+.side-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }

@@ -93,9 +93,58 @@ class UtilsClass
                 'weapon_paint_id' => $weapon['weapon_paint_id'],
                 'weapon_seed' => $weapon['weapon_seed'],
                 'weapon_wear' => $weapon['weapon_wear'],
+                'weapon_stattrak' => $weapon['weapon_stattrak'] ?? 0,
             ];
         }
 
         return $selected;
+    }
+
+    /** Every glove model and paint, from the data file. The first entry is the default (no gloves). */
+    public static function glovesFromJson(): array
+    {
+        return json_decode(file_get_contents(__DIR__ . '/../data/' . GLOVE_LANGUAGE . '.json'), true) ?: [];
+    }
+
+    /**
+     * Saves the chosen gloves for one side ($team: 2 = T, 3 = CT). $value is "defindex|paint"; "0|0" removes the gloves.
+     * The glove model goes in wp_player_gloves and its paint in wp_player_skins, as the plugin expects.
+     */
+    public static function saveGloves(DataBase $db, string $steamid, string $value, int $team): void
+    {
+        [$defindex, $paint] = array_pad(explode('|', $value, 2), 2, '');
+        if (!ctype_digit($defindex) || !ctype_digit($paint)) {
+            return;
+        }
+        $defindex = (int) $defindex;
+        $paint = (int) $paint;
+
+        $valid = false;
+        foreach (self::glovesFromJson() as $glove) {
+            if ((int) $glove['weapon_defindex'] === $defindex && (int) $glove['paint'] === $paint) {
+                $valid = true;
+                break;
+            }
+        }
+        if (!$valid) {
+            return;
+        }
+
+        if ($defindex === 0) {
+            $db->query("DELETE FROM `wp_player_gloves` WHERE `steamid` = :steamid AND `weapon_team` = :team", ["steamid" => $steamid, "team" => $team]);
+            return;
+        }
+
+        $db->query(
+            "INSERT INTO `wp_player_gloves` (`steamid`, `weapon_team`, `weapon_defindex`) VALUES (:steamid, :team, :defindex)
+             ON DUPLICATE KEY UPDATE `weapon_defindex` = :defindex_update",
+            ["steamid" => $steamid, "team" => $team, "defindex" => $defindex, "defindex_update" => $defindex]
+        );
+        $db->query(
+            "INSERT INTO `wp_player_skins` (`steamid`, `weapon_team`, `weapon_defindex`, `weapon_paint_id`, `weapon_wear`, `weapon_seed`)
+             VALUES (:steamid, :team, :defindex, :paint, 0.01, 0)
+             ON DUPLICATE KEY UPDATE `weapon_paint_id` = :paint_update",
+            ["steamid" => $steamid, "team" => $team, "defindex" => $defindex, "paint" => $paint, "paint_update" => $paint]
+        );
     }
 }
